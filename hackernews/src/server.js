@@ -1,4 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server');
+const fs = require(`fs`);
+const path = require(`path`);
 
 // HackerNewsのfeed
 let links = [
@@ -8,23 +10,6 @@ let links = [
     url: 'www.udemy-graphql-tutorial.com',
   },
 ];
-// Graphqlのスキーマ定義
-const typeDefs = gql`
-  type Query {
-    info: String!
-    feed: [Link]!
-  }
-
-  type Mutation {
-    post(url: String!, description: String!): Link!
-  }
-
-  type Link {
-    id: ID!
-    description: String!
-    url: String!
-  }
-`;
 
 const resolvers = {
   Query: {
@@ -49,7 +34,7 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf-8'),
   resolvers,
 });
 
